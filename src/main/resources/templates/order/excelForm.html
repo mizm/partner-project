@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <form role="form" action="/order/new" th:object="${excelForm}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="file">엑셀파일</label>
+            <input type="file" name="file" class="form-control" id="file"
+                   th:class="${#fields.hasErrors('file')}? 'form-control  fieldError' : 'form-control'">
+            <p th:if="${#fields.hasErrors('file')}" th:errors="*{file}">Incorrect date</p>
+        </div>
+        <div class="form-group">
+            <label for="today">날짜</label>
+            <input type="date" name="today" class="form-control" id="today"> </div>
+        <button type="submit" class="btn btn-primary">업로드</button>
+    </form>
+    <br/>
+    <div th:replace="fragments/footer :: footer" />
+</div> <!-- /container -->
+</body>
+<script th:inline="javascript">
+
+    $(document).ready(function(){
+        document.getElementById('today').valueAsDate = new Date();
+    });
+
+
+</script>
+</html>
