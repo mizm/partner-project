@@ -4,36 +4,33 @@
 <body>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <div>
-        <h2 th:text="${order.orderDate}"></h2>
+    <div> <div>
+        <form th:object="${totalOrderSearch}" class="form-inline">
+<!--            <div class="form-group mb-2">-->
+<!--                <input type="text" th:field="*{orderDate}" class="form- control" placeholder="주문서날짜"/>-->
+<!--            </div>-->
+            <div class="form-group mx-sm-1 mb-2">
+                <label for="orderDate">날짜</label>
+                <input type="date" th:field="*{orderDate}" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary mb-2">검색</button> </form>
     </div>
         <table class="table table-striped">
             <thead>
             <tr>
                 <th>#</th>
-                <th>회원명</th> <th>주문날짜</th> <th>내역</th>
+                <th>생성순서</th> <th>주문날짜</th> <th>생성날짜</th>
+<!--                <th>대표상품 주문수량</th> <th>상태</th> <th>일시</th> 제-->
             </tr>
             </thead>
             <tbody>
-            <tr th:each="item : ${order.orderDtos}">
-                <td th:text="${item.orderId}"></td>
-                <td th:text="${item.clientName}"></td>
+            <tr th:each="item : ${totalOrders}"
+                th:onclick="'window.location.href = \'totalOrders/' + ${item.id} + '\''"
+                style = "cursor:pointer">
+                <td th:text="${item.id}"></td>
+                <td th:text="${item.ord}"></td>
                 <td th:text="${item.orderDate}"></td>
-                <td>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>상품</th> <th>분류</th> <th>가격</th> <th>수량</th>
-                            </tr>
-                        </thead>
-                        <tr th:each="order : ${item.orderItems}">
-                            <td th:text="${order.itemName}"></td>
-                            <td th:text="${order.size}"></td>
-                            <td th:text="${order.price}"></td>
-                            <td th:text="${order.count}"></td>
-                        </tr>
-                    </table>
-                </td>
+                <td th:text="${item.createDate}"></td>
 <!--                <td th:text="${item.orderItems[0].item.name}"></td>-->
 <!--                <td th:text="${item.orderItems[0].orderPrice}"></td>-->
 <!--                <td th:text="${item.orderItems[0].count}"></td>-->

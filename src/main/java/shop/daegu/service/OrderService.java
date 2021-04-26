@@ -6,13 +6,14 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.daegu.domain.Client;
 import shop.daegu.domain.Order;
 import shop.daegu.domain.OrderItem;
+import shop.daegu.domain.TotalOrder;
 import shop.daegu.dto.excel.ExcelData;
 import shop.daegu.dto.excel.ExcelToOrder;
-import shop.daegu.dto.order.OrderDto;
-import shop.daegu.dto.order.OrderSearch;
+import shop.daegu.dto.order.*;
 import shop.daegu.repository.Client.ClientRepository;
 import shop.daegu.repository.Order.OrderRepository;
 import shop.daegu.repository.Order.OrderSearchRepository;
+import shop.daegu.repository.Order.TotalOrderRepository;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -26,15 +27,16 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ClientRepository clientRepository;
     private final OrderSearchRepository orderSearchRepository;
+    private final TotalOrderRepository totalOrderRepository;
+    private final FilterService filterService;
 
     @Transactional
-    public void saveExcelToOrder(ExcelToOrder excelToOrder) {
+    public Long saveExcelToOrder(ExcelToOrder excelToOrder) {
         LocalDate orderDate = excelToOrder.getOrderDate();
         List<ExcelData> dataList = excelToOrder.getDataList();
+        List<Client> clients = clientRepository.findByNameIn(getNames(dataList));
 
-        List<String> names = getNames(dataList);
-
-        List<Client> clients = clientRepository.findByNameIn(names);
+        TotalOrder totalOrder = createTotalOrder(orderDate);
 
         HashMap<String, Order> orders = new HashMap<>();
         for (ExcelData excelData : dataList) {
@@ -49,11 +51,20 @@ public class OrderService {
             if(orders.containsKey(client.getName())) {
                 orders.get(client.getName()).addOrderItem(new OrderItem(excelData));
             } else {
-                Order order = Order.createOrder(client, orderDate, new OrderItem(excelData));
+                Order order = Order.createOrder(client, orderDate, totalOrder, new OrderItem(excelData));
                 orderRepository.save(order);
                 orders.put(client.getName(),order);
             }
         }
+        return totalOrder.getId();
+    }
+
+    private TotalOrder createTotalOrder(LocalDate orderDate) {
+        TotalOrder totalOrder = new TotalOrder(orderDate);
+        Long count = totalOrderRepository.countByOrderDate(orderDate);
+        totalOrder.changeOrd(count);
+        totalOrderRepository.save(totalOrder);
+        return totalOrder;
     }
 
     private Optional<Client> findClient(List<Client> clients, String name) {
@@ -79,5 +90,25 @@ public class OrderService {
         return result.stream()
                 .map(OrderDto::new)
                 .collect(Collectors.toList());
+    }
+
+    public List<OrderDto> findByFilter(OrderSearch orderSearch) {
+        OrderFilter filters = filterService.findFilters(orderSearch.getFilterGroupIds());
+        List<Order> result = orderSearchRepository.findByFilter(orderSearch,filters);
+        return result.stream()
+                .map(OrderDto::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<TotalOrderDto> findTotalOrders(TotalOrderSearch totalOrderSearch) {
+        List<TotalOrder> result = orderSearchRepository.findTotalOrders(totalOrderSearch);
+        return result.stream()
+                .map(o -> new TotalOrderDto(o.getId(),o.getOrderDate(),o.getCreateDate(),o.getOrd()))
+                .collect(Collectors.toList());
+    }
+
+    public TotalOrder findTotalOrder(Long id) {
+        return totalOrderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("주문서가 없습니다."));
     }
 }

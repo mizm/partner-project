@@ -5,4 +5,5 @@ import shop.daegu.domain.Group;
 import shop.daegu.domain.filter.FilterGroup;
 
 public interface FilterGroupRepository extends JpaRepository<FilterGroup,Long> {
+
 }

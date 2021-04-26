@@ -4,7 +4,7 @@
 <body>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <form role="form" action="/order/new" th:object="${excelForm}" method="post" enctype="multipart/form-data">
+    <form role="form" action="/totalOrder/new" th:object="${excelForm}" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="file">엑셀파일</label>
             <input type="file" name="file" class="form-control" id="file"

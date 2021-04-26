@@ -12,23 +12,16 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(of = {"name","filterType"})
-public class ItemFilter {
+@ToString(of = {"id","name"})
+public class Item {
 
     @Id @GeneratedValue
+    @Column(name = "item_id")
     private Long id;
 
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    private FilterType filterType;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "filter_group_id")
-    private FilterGroup filterGroup;
-
-    public ItemFilter(String name, FilterType filterType, FilterGroup filterGroup) {
+    public Item(String name) {
         this.name = name;
-        this.filterGroup = filterGroup;
     }
 }
