@@ -40,12 +40,12 @@ class ClientServiceTest {
         groupRepository.save(group2);
         groupRepository.save(group3);
         groupId = group3.getId();
-        Client client1 = new Client("client1", group1, 1);
-        Client client2 = new Client("client2",group2, 2);
-        Client client3 = new Client("client3",group3, 3);
-        Client client4 = new Client("client4",group1, 3);
-        Client client5 = new Client("client5",group2, 3);
-        Client client6 = new Client("client6",group3, 3);
+        Client client1 = new Client("client1", "dc1",group1, 1);
+        Client client2 = new Client("client2","dc1",group2, 2);
+        Client client3 = new Client("client3","dc1",group3, 3);
+        Client client4 = new Client("client4","dc1",group1, 3);
+        Client client5 = new Client("client5","dc1",group2, 3);
+        Client client6 = new Client("client6","dc1",group3, 3);
         clientRepository.save(client1);
         clientRepository.save(client2);
         clientRepository.save(client3);
