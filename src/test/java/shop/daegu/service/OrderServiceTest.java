@@ -4,13 +4,25 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
+import shop.daegu.dto.excel.ExcelData;
 import shop.daegu.dto.excel.ExcelToOrder;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
 
 @SpringBootTest
 class OrderServiceTest {
 
     @Autowired
     OrderService orderService;
+
+    @Autowired
+    ExcelService excelService;
 
     private ExcelToOrder excelToOrder;
 
@@ -20,7 +32,15 @@ class OrderServiceTest {
 
     }
     @Test
-    void 오더생성테스트() {
+    void 오더생성테스트() throws IOException {
 //        orderService
+        ClassPathResource cpr = new ClassPathResource("test.xlsx");
+        MultipartFile file = new MockMultipartFile("text.xlsx", cpr.getInputStream());
+        System.out.println("file = " + file);
+
+        List<ExcelData> data = excelService.readExcel(file, "xlsx");
+        ExcelToOrder excelToOrder = new ExcelToOrder("2021-04-27",data);
+        Long totalOrderId = orderService.saveExcelToOrder(excelToOrder);
+        System.out.println("totalOrderId = " + totalOrderId);
     }
 }
