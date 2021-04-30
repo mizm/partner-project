@@ -3,6 +3,7 @@ package shop.daegu.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import shop.daegu.dto.excel.ExcelData;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(of={"id","name","price","count","size"})
 public class OrderItem {
 
     @Id

@@ -92,12 +92,15 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    public List<OrderDto> findByFilter(OrderSearch orderSearch) {
+    public List<OrderItem> findOrderItemByFilter(OrderSearch orderSearch) {
         OrderFilter filters = filterService.findFilters(orderSearch.getFilterGroupIds());
-        List<Order> result = orderSearchRepository.findByFilter(orderSearch,filters);
-        return result.stream()
-                .map(OrderDto::new)
-                .collect(Collectors.toList());
+        return orderSearchRepository.findOrderItemByFilter(orderSearch,filters);
+//        return result.stream()
+//                .map(o -> new OrderDto(o,orderSearchRepository.findOrderItemsByFilter(orderSearch,filters)))
+//                .collect(Collectors.toList());
+//        return result.stream()
+//                .map(OrderDto::new)
+//                .collect(Collectors.toList());
     }
 
     public List<TotalOrderDto> findTotalOrders(TotalOrderSearch totalOrderSearch) {
@@ -111,4 +114,5 @@ public class OrderService {
         return totalOrderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("주문서가 없습니다."));
     }
+
 }

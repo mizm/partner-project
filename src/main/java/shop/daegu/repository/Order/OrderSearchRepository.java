@@ -2,16 +2,12 @@ package shop.daegu.repository.Order;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
-import shop.daegu.domain.Order;
-import shop.daegu.domain.QOrderItem;
-import shop.daegu.domain.QTotalOrder;
-import shop.daegu.domain.TotalOrder;
-import shop.daegu.dto.order.OrderFilter;
-import shop.daegu.dto.order.OrderSearch;
-import shop.daegu.dto.order.TotalOrderSearch;
+import shop.daegu.domain.*;
+import shop.daegu.dto.order.*;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
@@ -39,7 +35,7 @@ public class OrderSearchRepository {
                 .select(order)
                 .from(order)
                 .leftJoin(order.client, client).fetchJoin()
-                .leftJoin(order.totalOrder, totalOrder)
+                .leftJoin(order.totalOrder, totalOrder).fetchJoin()
                 .where(
                         clientNameEq(cond.getClientName()),
                         orderDateEq(cond.getOrderDate()),
@@ -47,18 +43,20 @@ public class OrderSearchRepository {
                 ).fetch();
     }
 
-    public List<Order> findByFilter(OrderSearch cond, OrderFilter filter) {
+    public List<OrderItem> findOrderItemByFilter(OrderSearch cond, OrderFilter filter) {
         return queryFactory
-                .select(order)
-                .from(order)
+                .select(orderItem)
+                .from(orderItem)
+                .leftJoin(orderItem.order, order).fetchJoin()
                 .leftJoin(order.client, client).fetchJoin()
-                .leftJoin(order.orderItems, orderItem).fetchJoin()
+                .leftJoin(order.totalOrder, totalOrder)
                 .where(
-                        orderDateEq(cond.getOrderDate()),
+                        totalOrderIdEq(cond.getTotalOrderId()),
                         includeFilter(filter.getIncludeItems()),
                         excludeFilter(filter.getExcludeItems())
                 ).fetch();
     }
+
 
     public List<TotalOrder> findTotalOrders(TotalOrderSearch totalOrderSearch) {
         return queryFactory

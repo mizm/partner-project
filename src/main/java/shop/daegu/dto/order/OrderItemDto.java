@@ -1,9 +1,11 @@
 package shop.daegu.dto.order;
 
 import lombok.Getter;
+import lombok.ToString;
 import shop.daegu.domain.OrderItem;
 
 @Getter
+@ToString
 public class OrderItemDto {
     private String itemName;
     private int price;

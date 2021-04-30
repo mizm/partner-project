@@ -24,4 +24,5 @@ public class FilterService {
     public OrderFilter findFilters(List<Long> idList) {
         return new OrderFilter(itemFilterGroupSearchRepository.findByGroupIds(idList));
     }
+
 }
