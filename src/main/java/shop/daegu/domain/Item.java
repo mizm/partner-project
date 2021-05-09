@@ -1,4 +1,4 @@
-package shop.daegu.domain.filter;
+package shop.daegu.domain;
 
 import lombok.AccessLevel;
 import lombok.Getter;

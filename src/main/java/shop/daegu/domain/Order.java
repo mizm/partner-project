@@ -34,7 +34,7 @@ public class Order {
     @JoinColumn(name = "total_order_id")
     private TotalOrder totalOrder;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     public void addOrderItem(OrderItem orderItem) {

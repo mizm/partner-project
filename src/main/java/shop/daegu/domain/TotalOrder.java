@@ -22,6 +22,10 @@ public class TotalOrder {
     @OneToMany(mappedBy = "totalOrder")
     private List<Order> orders = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    private Account account;
+
     private LocalDate orderDate;
 
     private LocalDateTime createDate;

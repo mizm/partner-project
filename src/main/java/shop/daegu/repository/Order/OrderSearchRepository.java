@@ -43,6 +43,22 @@ public class OrderSearchRepository {
                 ).fetch();
     }
 
+    public List<Order> findByFilter(OrderSearch cond, OrderFilter filter) {
+        return queryFactory
+                .select(order)
+                .distinct()
+                .from(order)
+                .leftJoin(order.totalOrder, totalOrder).fetchJoin()
+                .leftJoin(order.client, client).fetchJoin()
+                .leftJoin(order.orderItems, orderItem).fetchJoin()
+                .where(
+                        totalOrderIdEq(cond.getTotalOrderId()),
+                        includeFilter(filter.getIncludeItems()),
+                        excludeFilter(filter.getExcludeItems())
+                )
+                .fetch();
+    }
+
     public List<OrderItem> findOrderItemByFilter(OrderSearch cond, OrderFilter filter) {
         return queryFactory
                 .select(orderItem)

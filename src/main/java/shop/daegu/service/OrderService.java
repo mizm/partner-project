@@ -92,11 +92,11 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    public List<OrderItem> findOrderItemByFilter(OrderSearch orderSearch) {
+    public List<Order> findOrderItemByFilter(OrderSearch orderSearch) {
         OrderFilter filters = filterService.findFilters(orderSearch.getFilterGroupIds());
-        return orderSearchRepository.findOrderItemByFilter(orderSearch,filters);
+        return orderSearchRepository.findByFilter(orderSearch, filters);
 //        return result.stream()
-//                .map(o -> new OrderDto(o,orderSearchRepository.findOrderItemsByFilter(orderSearch,filters)))
+//                .map(o -> new OrderDto(o,orderSearchRepository.findOrderItemByFilter(orderSearch,filters)))
 //                .collect(Collectors.toList());
 //        return result.stream()
 //                .map(OrderDto::new)

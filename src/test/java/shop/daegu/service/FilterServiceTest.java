@@ -1,13 +1,12 @@
 package shop.daegu.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import shop.daegu.domain.filter.FilterGroup;
 import shop.daegu.domain.filter.FilterType;
-import shop.daegu.domain.filter.Item;
+import shop.daegu.domain.Item;
 import shop.daegu.domain.filter.ItemFilterGroup;
 import shop.daegu.dto.order.OrderFilter;
 import shop.daegu.repository.filtergroup.ItemFilterGroupRepository;

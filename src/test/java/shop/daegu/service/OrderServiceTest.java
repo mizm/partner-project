@@ -1,6 +1,5 @@
 package shop.daegu.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,26 +7,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.Commit;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import shop.daegu.domain.OrderItem;
+import shop.daegu.domain.Order;
 import shop.daegu.domain.TotalOrder;
 import shop.daegu.domain.filter.FilterGroup;
 import shop.daegu.domain.filter.FilterType;
-import shop.daegu.domain.filter.Item;
+import shop.daegu.domain.Item;
 import shop.daegu.domain.filter.ItemFilterGroup;
 import shop.daegu.dto.excel.ExcelData;
 import shop.daegu.dto.excel.ExcelToOrder;
-import shop.daegu.dto.order.OrderDto;
 import shop.daegu.dto.order.OrderSearch;
+import shop.daegu.repository.Order.OrderSearchRepository;
 import shop.daegu.repository.filtergroup.FilterGroupRepository;
 import shop.daegu.repository.filtergroup.ItemFilterGroupRepository;
 import shop.daegu.repository.item.ItemRepository;
 
 import javax.persistence.EntityManager;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +53,10 @@ class OrderServiceTest {
 
     @Autowired
     ItemFilterGroupRepository itemFilterGroupRepository;
+
+    @Autowired
+    OrderSearchRepository orderSearchRepository;
+
     private ExcelToOrder excelToOrder;
 
     @BeforeEach
@@ -102,7 +102,8 @@ class OrderServiceTest {
         Long firstTotalOrder = orderService.saveExcelToOrder(excelToOrder);
         OrderSearch orderSearch = new OrderSearch();
         orderSearch.setTotalOrderId(firstTotalOrder);
-
+        em.flush();
+        em.clear();
 
         Item item1 = new Item("냉장)");
         Item item2 = new Item("냉동)");
@@ -122,20 +123,37 @@ class OrderServiceTest {
         orderSearch.setFilterGroupIds(filterIds);
 
 
-        List<OrderItem> orders = orderService.findOrderItemByFilter(orderSearch);
+
+        List<Order> orders = orderService.findOrderItemByFilter(orderSearch);
 
         //then
-        for (OrderItem order : orders) {
+        for (Order order : orders) {
             System.out.println("order = " + order);
-            System.out.println("order.getOrder().getTotalOrder().getId() = " + order.getOrder().getTotalOrder().getId());
-            System.out.println("order.getOrder().getClient().getName() = " + order.getOrder().getClient().getName());
-            assertThat(order.getName()).satisfiesAnyOf(
-                ase -> assertThat(order.getName()).startsWith("냉장)"),
-                    ase -> assertThat(order.getName()).startsWith("냉동)")
-            );
+            System.out.println("orderName = " + order.getId());
+            System.out.println("order = " + order.getOrderItems());
+//            System.out.println("order.getOrder().getTotalOrder().getId() = " + order.getOrder().getTotalOrder().getId());
+//            System.out.println("order.getOrder().getClient().getName() = " + order.getOrder().getClient().getName());
+//            assertThat(order.getName()).satisfiesAnyOf(
+//                ase -> assertThat(order.getName()).startsWith("냉장)"),
+//                    ase -> assertThat(order.getName()).startsWith("냉동)")
+//            );
         }
 
 
+    }
+
+    @Test
+    void 필터_테스트2() {
+        //given
+        Long firstTotalOrder = orderService.saveExcelToOrder(excelToOrder);
+        em.flush();
+        em.clear();
+//        List<Order> orders = orderSearchRepository.findByFilter();
+//
+//        for (Order order : orders) {
+//            System.out.println("orderName = " + order.getId());
+//            System.out.println("order = " + order.getOrderItems());
+//        }
     }
 
 }
